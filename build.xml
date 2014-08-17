@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project name="VoxBuild" default="main" basedir=".">
+  <!-- Sets variables which can later be used. -->
+  <!-- The value of a property is accessed via ${} -->
+  <property name="src.dir" location="src" />
+  <property name="build.dir" location="bin" />
+  <property name="docs.dir" location="docs" />
+  <property name="lib.dir" location="/Program Files/Apache/apache-tomcat/lib" />
+	<!--
+  <property name="dist.dir" location="dist" />
+  -->
+
+  <!-- Deletes the existing build, docs and dist directory-->
+  <target name="clean">
+    <delete dir="${build.dir}" />
+   <!-- <delete dir="${docs.dir}" />
+    <delete dir="${dist.dir}" />-->
+  </target>
+
+  <!-- Creates the  build, docs and dist directory-->
+  <target name="makedir">
+    <mkdir dir="${build.dir}" />
+    <!--<mkdir dir="${docs.dir}" />
+    <mkdir dir="${dist.dir}" />-->
+  </target>
+
+  <!-- Compiles the java code (including the usage of library for JUnit -->
+  <target name="compile" depends="makedir">
+    <javac srcdir="${src.dir}" destdir="${build.dir}" classpath="${lib.dir}/cmu_time_awb.jar:${lib.dir}/cmu_us_kal.jar:${lib.dir}/cmudict04.jar:${lib.dir}/cmulex.jar:${lib.dir}/cmutimelex.jar:${lib.dir}/en_us.jar:${lib.dir}/freetts.jar:${lib.dir}/freetts-jsapi10.jar:${lib.dir}/jsapi.jar:${lib.dir}/mbrola.jar">
+    </javac>
+
+  </target>
+
+  <!-- Creates Javadoc -->
+  <target name="docs" depends="compile">
+    <javadoc packagenames="src" sourcepath="${src.dir}" destdir="${docs.dir}">
+      <!-- Define which files / directory should get included, we include all -->
+       <fileset dir="${src.dir}">
+                <include name="**" />
+           </fileset>
+    </javadoc>
+  </target>
+
+  <!--Creates the deployable jar file  -->
+  <target name="jar" depends="compile">
+    <jar destfile="${build.dir}\VoxHumana.jar" basedir="${build.dir}" includes="**/com/**" excludes="**/*.java">
+      <manifest>
+        <attribute name="Main-Class" value="com.neocoretechs.talker.VoxHumana" />
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="copy" depends="jar">
+	<copy file="${build.dir}\VoxHumana.jar" todir="${lib.dir}"/>
+  </target>
+	
+  <target name="main" depends="copy">
+    <description>Main target</description>
+  </target>
+
+</project> 
