@@ -13,13 +13,14 @@ import javax.speech.EngineException;
 import javax.speech.EngineStateError;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
+import javax.speech.synthesis.SynthesizerProperties;
 import javax.speech.synthesis.Voice;
 
 public final class VoxHumana {
 	  private SynthesizerModeDesc desc;
 	  private Synthesizer synthesizer;
 	  private Voice voice;
-	  private static VoxHumana instance = null;
+	  private volatile static VoxHumana instance = null;
 	  public static VoxHumana getInstance() {
 		  if( instance == null ) {
 			  try {
@@ -56,8 +57,14 @@ public final class VoxHumana {
 		        }
 		      }
 		      synthesizer.getSynthesizerProperties().setVoice(voice);
-		    }
-		    
+		      // get synthesizer properties
+		      SynthesizerProperties properties =synthesizer.getSynthesizerProperties();
+		      properties.setVolume(1.0f);
+		      properties.setPitch(300);
+		      // set up speaking rate
+		      properties.setSpeakingRate( 120.0f );
+		           
+		    } // end if    
 	}
 
 	public void terminate() throws EngineException, EngineStateError {
